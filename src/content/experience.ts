@@ -1,6 +1,6 @@
 import type { ResponsiveText } from "./types";
 
-export interface ExperienceEntry {
+interface ExperienceEntry {
   period: string;
   role: string;
   company: string;

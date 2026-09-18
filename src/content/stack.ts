@@ -1,4 +1,4 @@
-export interface StackLayer {
+interface StackLayer {
   label: string;
   value: string;
   /** Aspirational layer: dashed border and sand text. */

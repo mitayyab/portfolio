@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useReducer } from "react";
 
 /** How long each layer stays highlighted while a trace runs (from the design). */
-export const TRACE_STEP_MS = 620;
+const TRACE_STEP_MS = 620;
 
 type TraceState = {
   active: number;

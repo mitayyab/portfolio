@@ -1,4 +1,4 @@
-export interface EducationEntry {
+interface EducationEntry {
   qualification: string;
   institution: string;
   /** Shown after the institution when the design gives one. */
