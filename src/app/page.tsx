@@ -1,5 +1,7 @@
+import { Contact } from "@/components/contact/Contact";
 import { ExperienceSection } from "@/components/experience/ExperienceSection";
 import { Hero } from "@/components/hero/Hero";
+import { SiteFooter } from "@/components/layout/SiteFooter";
 import { SiteHeader } from "@/components/layout/SiteHeader";
 import { SkipLink } from "@/components/layout/SkipLink";
 import { Skills } from "@/components/skills/Skills";
@@ -17,7 +19,9 @@ export default function Home() {
         <HowIBuild />
         <ExperienceSection />
         <Skills />
+        <Contact />
       </main>
+      <SiteFooter />
     </>
   );
 }
