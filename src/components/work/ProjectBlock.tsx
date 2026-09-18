@@ -38,7 +38,7 @@ export function ProjectBlock({ project, flip = false }: ProjectBlockProps) {
         <p className="mt-1.5 font-display text-[1.125rem] leading-[1.4] text-gold-deep lg:mt-2.5 lg:max-w-[34ch] lg:text-[1.3125rem] lg:leading-[1.45]">
           {lede}
         </p>
-        <p className="mt-2.5 text-[0.875rem] leading-[1.75] text-text-2 lg:mt-3 lg:max-w-[50ch] lg:text-[0.90625rem] lg:leading-[1.8] lg:hyphens-auto lg:text-justify">
+        <p className="mt-2.5 max-w-[62ch] text-[0.875rem] leading-[1.75] text-text-2 lg:mt-3 lg:max-w-[50ch] lg:text-[0.90625rem] lg:leading-[1.8] lg:hyphens-auto lg:text-justify">
           <Copy text={body} />
         </p>
 

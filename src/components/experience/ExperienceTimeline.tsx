@@ -45,7 +45,7 @@ export function ExperienceTimeline() {
             <h3 className="mt-0.75 font-display text-[1.5rem] leading-[1.12] text-text lg:mt-1 lg:text-[1.875rem]">
               {`${role} — ${company}`}
             </h3>
-            <p className="mt-1.25 text-[0.8125rem] leading-[1.7] text-text-2 lg:mt-1.5 lg:max-w-[64ch] lg:text-[0.84375rem] lg:leading-[1.75]">
+            <p className="mt-1.25 max-w-[64ch] text-[0.8125rem] leading-[1.7] text-text-2 lg:mt-1.5 lg:text-[0.84375rem] lg:leading-[1.75]">
               <Copy text={summary} />
             </p>
           </li>

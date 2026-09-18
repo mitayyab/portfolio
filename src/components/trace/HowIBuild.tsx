@@ -34,7 +34,7 @@ export function HowIBuild() {
           <br />
           when you click?
         </h2>
-        <p className="mt-3 text-[0.84375rem] leading-[1.75] text-ink-muted lg:mt-4 lg:max-w-[44ch] lg:text-[0.90625rem] lg:leading-[1.8]">
+        <p className="mt-3 max-w-[62ch] text-[0.84375rem] leading-[1.75] text-ink-muted lg:mt-4 lg:max-w-[44ch] lg:text-[0.90625rem] lg:leading-[1.8]">
           <Copy
             text={{
               compact:

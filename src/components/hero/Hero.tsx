@@ -40,7 +40,7 @@ export function Hero() {
             to <em className="text-sand">database</em>.
           </h1>
 
-          <p className="mt-4 text-[0.875rem] leading-[1.75] text-ink-muted lg:mt-6.5 lg:max-w-[58ch] lg:text-[0.96875rem] lg:leading-[1.8]">
+          <p className="mt-4 max-w-[62ch] text-[0.875rem] leading-[1.75] text-ink-muted lg:mt-6.5 lg:max-w-[58ch] lg:text-[0.96875rem] lg:leading-[1.8]">
             <span className="lg:hidden">
               I build web applications across every layer — React and Next.js
               interfaces, Node and Nest.js APIs, and the PostgreSQL schemas and
