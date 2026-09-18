@@ -14,7 +14,7 @@ export function ContactLinks() {
     <div className="lg:mt-6.5 lg:flex lg:flex-col lg:items-start lg:gap-2.5">
       <a
         href={`mailto:${site.email}`}
-        className="underline-grow mt-4.5 inline-block font-display text-[1.25rem] text-sand lg:mt-0 lg:text-[1.5rem]"
+        className="mt-4.5 inline-block underline-grow font-display text-[1.25rem] text-sand lg:mt-0 lg:text-[1.5rem]"
       >
         {site.email}
       </a>

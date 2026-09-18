@@ -35,7 +35,7 @@ export function ProjectPlate({ name, image, className }: ProjectPlateProps) {
         ) : (
           <div
             aria-hidden="true"
-            className="plate-stripes absolute inset-0 grid place-items-center"
+            className="absolute inset-0 grid place-items-center plate-stripes"
           >
             <span className="bg-bg px-2.25 py-1.25 text-center font-mono text-mono-md tracking-[0.1em] text-muted uppercase">
               {`Screenshot: ${name}`}

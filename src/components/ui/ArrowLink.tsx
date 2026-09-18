@@ -14,7 +14,7 @@ export function ArrowLink({ href, label, className }: ArrowLinkProps) {
       target="_blank"
       rel="noopener noreferrer"
       className={cn(
-        "underline-grow inline-flex items-baseline gap-1.75 font-mono text-mono-lg tracking-[0.11em] text-gold-deep uppercase lg:gap-2 lg:text-mono-xl",
+        "inline-flex items-baseline gap-1.75 underline-grow font-mono text-mono-lg tracking-[0.11em] text-gold-deep uppercase lg:gap-2 lg:text-mono-xl",
         className,
       )}
     >
