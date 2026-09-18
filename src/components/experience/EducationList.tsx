@@ -14,32 +14,34 @@ export function EducationList() {
         role="list"
         className="mt-2.5 flex flex-col gap-2.25 lg:mt-3.5 lg:gap-2.5"
       >
-        {education.map(({ qualification, institution, years, highlight }) => (
-          <li
-            key={qualification}
-            className={cn(
-              "flex items-baseline justify-between gap-3 border-t pt-2.5 lg:gap-3.5 lg:pt-2.75",
-              highlight ? "border-gold" : "border-rule",
-            )}
-          >
-            <div>
-              <p className="font-display text-[1.1875rem] leading-[1.2] text-text lg:text-[1.25rem]">
-                {qualification}
-              </p>
-              <p className="mt-0.5 text-[0.75rem] text-muted lg:text-[0.78125rem]">
-                {institution}
-              </p>
-            </div>
-            <p
+        {education.map(
+          ({ qualification, institution, location, years, highlight }) => (
+            <li
+              key={qualification}
               className={cn(
-                "font-mono text-mono-sm tracking-[0.12em] tabular-nums lg:text-mono-md",
-                highlight ? "text-gold-deep" : "text-muted",
+                "flex items-baseline justify-between gap-3 border-t pt-2.5 lg:gap-3.5 lg:pt-2.75",
+                highlight ? "border-gold" : "border-rule",
               )}
             >
-              {years}
-            </p>
-          </li>
-        ))}
+              <div>
+                <p className="font-display text-[1.1875rem] leading-[1.2] text-text lg:text-[1.25rem]">
+                  {qualification}
+                </p>
+                <p className="mt-0.5 text-[0.75rem] text-muted lg:text-[0.78125rem]">
+                  {location ? `${institution}, ${location}` : institution}
+                </p>
+              </div>
+              <p
+                className={cn(
+                  "font-mono text-mono-sm tracking-[0.12em] tabular-nums lg:text-mono-md",
+                  highlight ? "text-gold-deep" : "text-muted",
+                )}
+              >
+                {years}
+              </p>
+            </li>
+          ),
+        )}
       </ul>
 
       <div className="hidden lg:block">
