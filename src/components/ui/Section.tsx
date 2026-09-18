@@ -11,6 +11,8 @@ const toneClasses = {
 type SectionProps = {
   as?: "section" | "footer";
   id?: string;
+  /** Id of the heading that names this region. */
+  labelledBy?: string;
   tone?: keyof typeof toneClasses;
   /** Classes for the full-bleed outer element. */
   className?: string;
@@ -23,13 +25,18 @@ type SectionProps = {
 export function Section({
   as: Tag = "section",
   id,
+  labelledBy,
   tone = "light",
   className,
   containerClassName,
   children,
 }: SectionProps) {
   return (
-    <Tag id={id} className={cn(toneClasses[tone], className)}>
+    <Tag
+      id={id}
+      aria-labelledby={labelledBy}
+      className={cn(toneClasses[tone], className)}
+    >
       <Container className={containerClassName}>{children}</Container>
     </Tag>
   );
