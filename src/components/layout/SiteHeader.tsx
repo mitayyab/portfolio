@@ -1,7 +1,7 @@
 import Link from "next/link";
-import { ButtonLink } from "@/components/ui/ButtonLink";
 import { Container } from "@/components/ui/Container";
 import { Copy } from "@/components/ui/Copy";
+import { ResumeLink } from "@/components/ui/ResumeLink";
 import { navItems } from "@/content/navigation";
 import { site } from "@/content/site";
 import { MobileMenu } from "./MobileMenu";
@@ -34,14 +34,9 @@ export function SiteHeader() {
               </li>
             ))}
           </ul>
-          <ButtonLink
-            variant="gold"
-            size="xs"
-            href={site.links.resume}
-            download
-          >
+          <ResumeLink variant="gold" size="xs">
             Résumé ↓
-          </ButtonLink>
+          </ResumeLink>
         </nav>
 
         <MobileMenu />

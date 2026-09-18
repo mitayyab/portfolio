@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import { buttonClass } from "@/components/ui/button-styles";
+import { ResumeLink } from "@/components/ui/ResumeLink";
 import { navItems } from "@/content/navigation";
 import { site } from "@/content/site";
 import { cn } from "@/lib/cn";
@@ -88,16 +89,9 @@ export function MobileMenu() {
         </nav>
 
         <div className="px-5 pt-6 pb-8">
-          <a
-            href={site.links.resume}
-            download
-            className={cn(
-              buttonClass({ variant: "sand", size: "md" }),
-              "w-full",
-            )}
-          >
+          <ResumeLink variant="sand" size="md" className="w-full">
             Download résumé ↓
-          </a>
+          </ResumeLink>
         </div>
       </dialog>
     </div>
