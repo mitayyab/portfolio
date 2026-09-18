@@ -12,12 +12,12 @@ export function SiteHeader() {
       <Container className="flex items-center gap-3 py-3.75 lg:gap-6.5 lg:py-5">
         <Link
           href="/"
-          className="font-display text-base text-text lg:text-[1.0625rem] lg:tracking-[0.02em]"
+          className="font-display text-[1rem] text-text lg:text-[1.0625rem] lg:tracking-[0.02em]"
         >
           <Copy text={{ compact: site.shortName, full: site.name }} />
         </Link>
         <span className="hidden font-mono text-mono-sm tracking-[0.13em] text-muted uppercase lg:inline">
-          {site.role} · {site.city}
+          {`${site.role} · ${site.city}`}
         </span>
 
         <nav

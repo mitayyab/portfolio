@@ -37,7 +37,7 @@ export function MobileMenu() {
         onClick={open}
         aria-haspopup="dialog"
         aria-label="Open menu"
-        className="-mx-3 -my-2.5 flex h-11 w-11 items-center justify-center"
+        className="-m-2.5 flex h-10.75 w-11 items-center justify-center"
       >
         <span aria-hidden="true" className="flex flex-col gap-1">
           <span className="block h-px w-5 bg-text" />
@@ -52,7 +52,7 @@ export function MobileMenu() {
         className="m-0 h-dvh max-h-none w-full max-w-none flex-col overflow-y-auto overscroll-contain border-0 bg-band p-0 text-ink [--focus-ring:var(--color-sand)] open:flex"
       >
         <div className="flex items-center gap-3 border-b border-band-border px-5 py-3.75">
-          <span className="font-display text-base">{site.shortName}</span>
+          <span className="font-display text-[1rem]">{site.shortName}</span>
           <button
             type="button"
             onClick={close}
