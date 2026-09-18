@@ -9,11 +9,11 @@ const variants = {
   quiet: "border-band-border-2 text-ink-2 hover:border-sand hover:text-ink",
 } as const;
 
-// Sizes that show on touch layouts keep a 44px minimum tap target below lg.
+// Small sizes keep a 44px minimum tap target below lg. "md" is full width there and 42px tall.
 const sizes = {
   xs: "px-3.5 py-2.25 text-mono-md tracking-[0.13em]",
   sm: "min-h-11 px-3.5 py-2.75 text-mono-sm tracking-[0.13em] lg:min-h-0 lg:px-4.5 lg:py-2.5 lg:text-mono-md",
-  md: "min-h-11 px-4.5 py-3.5 text-mono-lg tracking-[0.13em] lg:min-h-0 lg:px-5.5 lg:py-3.25 lg:text-mono-xl",
+  md: "px-4.5 py-3.5 text-mono-lg tracking-[0.13em] lg:px-5.5 lg:py-3.25 lg:text-mono-xl",
   form: "px-4.5 py-3 text-mono-lg tracking-[0.14em]",
 } as const;
 
