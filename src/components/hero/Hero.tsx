@@ -55,7 +55,7 @@ export function Hero() {
             </span>
           </p>
 
-          <div className="mt-5.5 flex flex-col gap-2.25 lg:mt-8 lg:flex-row lg:gap-3">
+          <div className="mt-5.5 flex flex-col gap-2.25 sm:flex-row sm:gap-3 lg:mt-8">
             <ButtonLink variant="sand" size="md" href={`#${sections.work.id}`}>
               View my projects
             </ButtonLink>

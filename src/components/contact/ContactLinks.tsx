@@ -19,7 +19,7 @@ export function ContactLinks() {
         {site.email}
       </a>
 
-      <div className="mt-4 grid grid-cols-2 gap-2.25 lg:mt-1.5 lg:flex lg:gap-2.5">
+      <div className="mt-4 grid grid-cols-2 gap-2.25 sm:flex sm:gap-2.5 lg:mt-1.5">
         {EXTERNAL_LINKS.map(({ label, href }) => (
           <ButtonLink
             key={label}
@@ -33,7 +33,7 @@ export function ContactLinks() {
             <span className="sr-only">(opens in a new tab)</span>
           </ButtonLink>
         ))}
-        <ResumeLink variant="sand" size="sm" className="col-span-2 lg:col-auto">
+        <ResumeLink variant="sand" size="sm" className="col-span-2 sm:col-auto">
           <Copy text={{ compact: "Download résumé ↓", full: "Résumé ↓" }} />
         </ResumeLink>
       </div>

@@ -28,7 +28,7 @@ export function TraceControls({
         onClick={onStart}
         className={cn(
           buttonClass({ variant: "sand", size: "trace" }),
-          "mt-4.5 w-full lg:mt-6.5 lg:w-auto",
+          "mt-4.5 w-full sm:w-auto lg:mt-6.5",
         )}
       >
         {buttonLabel(tracing, atEnd)}
