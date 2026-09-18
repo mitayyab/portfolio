@@ -14,6 +14,8 @@ const sizes = {
   xs: "px-3.5 py-2.25 text-mono-md tracking-[0.13em]",
   sm: "min-h-11 px-3.5 py-2.75 text-mono-sm tracking-[0.13em] lg:min-h-0 lg:px-4.5 lg:py-2.5 lg:text-mono-md",
   md: "px-4.5 py-3.5 text-mono-lg tracking-[0.13em] lg:px-5.5 lg:py-3.25 lg:text-mono-xl",
+  trace:
+    "px-4.5 py-3.25 text-mono-lg tracking-[0.14em] lg:px-5.5 lg:text-mono-xl",
   form: "px-4.5 py-3 text-mono-lg tracking-[0.14em]",
 } as const;
 
