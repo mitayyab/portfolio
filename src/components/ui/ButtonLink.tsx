@@ -1,6 +1,10 @@
 import type { ComponentPropsWithoutRef } from "react";
 import { cn } from "@/lib/cn";
-import { buttonClass, type ButtonSize, type ButtonVariant } from "./button-styles";
+import {
+  buttonClass,
+  type ButtonSize,
+  type ButtonVariant,
+} from "./button-styles";
 
 type ButtonLinkProps = ComponentPropsWithoutRef<"a"> & {
   variant: ButtonVariant;

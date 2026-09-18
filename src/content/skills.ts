@@ -11,7 +11,12 @@ export interface SkillGroup {
   exploring?: boolean;
 }
 
-export const exploringTopics = ["DevOps", "Cloud", "System design", "AI"] as const;
+export const exploringTopics = [
+  "DevOps",
+  "Cloud",
+  "System design",
+  "AI",
+] as const;
 
 export const skillGroups: readonly SkillGroup[] = [
   {
