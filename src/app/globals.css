@@ -58,3 +58,79 @@
   --font-display: var(--font-cormorant), Georgia, serif;
   --font-body: var(--font-lora), Georgia, serif;
 }
+
+@layer base {
+  html {
+    /* The design relies on the browser's "normal" line height for labels and
+       buttons; preflight would otherwise force 1.5. */
+    line-height: normal;
+    scroll-padding-top: 4rem; /* clears the sticky header */
+  }
+
+  @media (width >= theme(--breakpoint-lg)) {
+    html {
+      scroll-padding-top: 4.75rem;
+    }
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    html {
+      scroll-behavior: smooth;
+    }
+  }
+
+  body {
+    background-color: var(--color-bg);
+    color: var(--color-text);
+    font-family: var(--font-body);
+  }
+
+  /* Keyboard focus ring. Dark bands switch it to sand through --focus-ring. */
+  :focus-visible {
+    outline: 2px solid var(--focus-ring, var(--color-gold-deep));
+    outline-offset: 3px;
+  }
+
+  /* <main> only receives focus programmatically, from the skip link. */
+  main:focus-visible {
+    outline: none;
+  }
+
+  /* Stop browser autofill from painting light boxes on the dark form card. */
+  input:-webkit-autofill,
+  textarea:-webkit-autofill {
+    -webkit-text-fill-color: var(--color-ink-2);
+    caret-color: var(--color-ink-2);
+    box-shadow: 0 0 0 100rem var(--color-band-inset) inset;
+  }
+}
+
+/* Underline that grows from the left on hover or focus (the design's ".ul"). */
+@utility underline-grow {
+  background-image: linear-gradient(currentColor, currentColor);
+  background-repeat: no-repeat;
+  background-position: 0 100%;
+  background-size: 0 1px;
+  text-decoration: none;
+  transition: background-size 0.3s ease;
+
+  &:hover,
+  &:focus-visible {
+    background-size: 100% 1px;
+  }
+
+  /* Forced-colours mode strips background images, so fall back to a real underline. */
+  @media (forced-colors: active) {
+    background-image: none;
+    text-decoration: underline;
+  }
+}
+
+/* Diagonal-stripe fill for project plates that have no screenshot yet. */
+@utility plate-stripes {
+  background-image: repeating-linear-gradient(
+    135deg,
+    var(--color-surface) 0 10px,
+    var(--color-bg) 10px 20px
+  );
+}
