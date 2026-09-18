@@ -6,7 +6,7 @@ import {
   type ButtonVariant,
 } from "./button-styles";
 
-type ButtonLinkProps = ComponentPropsWithoutRef<"a"> & {
+export type ButtonLinkProps = ComponentPropsWithoutRef<"a"> & {
   variant: ButtonVariant;
   size: ButtonSize;
 };
