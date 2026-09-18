@@ -25,7 +25,10 @@ export function SiteHeader() {
           className="ml-auto hidden items-center gap-5.5 lg:flex"
         >
           {/* Size is set on the list so each <li> line box matches the link. */}
-          <ul className="flex items-center gap-5.5 text-[0.8125rem]">
+          <ul
+            role="list"
+            className="flex items-center gap-5.5 text-[0.8125rem]"
+          >
             {navItems.map((item) => (
               <li key={item.href}>
                 <a href={item.href} className="underline-grow text-text">

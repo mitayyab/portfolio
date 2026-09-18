@@ -67,7 +67,7 @@ export function MobileMenu() {
         </div>
 
         <nav aria-label="Menu" className="flex-1 px-5 pt-3">
-          <ul>
+          <ul role="list">
             {navItems.map((item) => (
               <li key={item.href} className="border-b border-band-border">
                 <a
