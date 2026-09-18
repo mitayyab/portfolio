@@ -1,26 +1,60 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+/*
+ * Design tokens from the design handoff (README, "Design Tokens").
+ * The palette is closed: Tailwind's default colours are removed so only the
+ * design's colours can be used. Sizes are rem (design px / 16) so the page
+ * honours the visitor's default font size.
+ */
+@theme {
+  --color-*: initial;
+
+  /* Light ground */
+  --color-bg: #f3f2f2;
+  --color-surface: #eae8e4;
+  --color-border: #c9c5be;
+  --color-rule: #dcd8d0;
+  --color-text: #201f1d;
+  --color-text-2: #433f3a;
+  --color-muted: #6b6760;
+  --color-gold: #b68235; /* stroke only, never a fill */
+  --color-gold-deep: #7f5920; /* gold used as text on the light ground */
+
+  /* Graphite bands */
+  --color-band: #101215;
+  --color-band-inset: #0a0b0d;
+  --color-band-border: #23272d;
+  --color-band-border-2: #323842;
+  --color-band-hover: #1b1f24;
+  --color-band-bar: #2a2f36;
+  --color-ink: #faebd3;
+  --color-ink-2: #f2f4f6;
+  --color-ink-muted: #a4adb8;
+  --color-ink-muted-2: #7e8794;
+  --color-sand: #f0c987;
+  --color-sand-deep: #c4a87c;
+
+  /* Monospace label sizes */
+  --text-mono-2xs: 0.53125rem; /* 8.5px */
+  --text-mono-xs: 0.5625rem; /* 9px */
+  --text-mono-sm: 0.59375rem; /* 9.5px */
+  --text-mono-md: 0.625rem; /* 10px */
+  --text-mono-lg: 0.65625rem; /* 10.5px */
+  --text-mono-xl: 0.6875rem; /* 11px */
+
+  /* Radii: chips 3px, cards and plates 5px. Buttons/inputs (4px) and inset
+     panels (6px) use Tailwind's rounded-sm and rounded-md. */
+  --radius-chip: 0.1875rem;
+  --radius-card: 0.3125rem;
+
+  --shadow-plate: 0 20px 44px rgb(32 31 29 / 0.16);
+  --ease-plate: cubic-bezier(0.2, 0.8, 0.2, 1);
+
+  --font-mono: ui-monospace, Menlo, monospace;
 }
 
+/* The font variables are set by next/font on <html>, so resolve them at use. */
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  --font-display: var(--font-cormorant), Georgia, serif;
+  --font-body: var(--font-lora), Georgia, serif;
 }
