@@ -3,8 +3,6 @@ import type { ResponsiveText } from "./types";
 export interface ProjectImage {
   src: string;
   alt: string;
-  width: number;
-  height: number;
 }
 
 export interface Project {
@@ -18,7 +16,8 @@ export interface Project {
   /**
    * Screenshot shown on the project plate. Until one is supplied the plate
    * renders the design's striped placeholder. Put the file in /public/projects
-   * and set { src: "/projects/iris.png", alt, width, height }.
+   * and set { src: "/projects/iris.png", alt }. It is cropped to the plate's
+   * 4:3 (mobile) or 16:11 (desktop) frame.
    */
   image?: ProjectImage;
 }
