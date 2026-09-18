@@ -32,7 +32,7 @@ export function SectionLabel({
           text,
         )}
       >
-        {number} — {title}
+        {`${number} — ${title}`}
       </Tag>
       <span aria-hidden="true" className={cn("h-px flex-1", rule)} />
     </div>
