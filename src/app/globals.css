@@ -50,6 +50,9 @@
   --shadow-plate: 0 20px 44px rgb(32 31 29 / 0.16);
   --ease-plate: cubic-bezier(0.2, 0.8, 0.2, 1);
 
+  /* Every transition in the design uses plain "ease". */
+  --default-transition-timing-function: ease;
+
   --font-mono: ui-monospace, Menlo, monospace;
 }
 
