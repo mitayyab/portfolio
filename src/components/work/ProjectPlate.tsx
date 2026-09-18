@@ -23,7 +23,7 @@ export function ProjectPlate({ name, image, className }: ProjectPlateProps) {
         className,
       )}
     >
-      <div className="relative aspect-4/3 overflow-hidden rounded-chip lg:aspect-16/11">
+      <div className="relative aspect-4/3 overflow-hidden rounded-chip sm:aspect-16/9 lg:aspect-16/11">
         {image ? (
           <Image
             src={image.src}
