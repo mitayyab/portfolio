@@ -1,11 +1,15 @@
+const NAME = "Muhammad Ibrahim Tayyab";
+const ROLE = "Full-stack engineer";
 const CITY = "Lahore";
 const COUNTRY_CODE = "PK";
 
 /** Facts about the site owner. Everything here comes from the design handoff. */
 export const site = {
-  name: "Muhammad Ibrahim Tayyab",
+  name: NAME,
   shortName: "M. Ibrahim Tayyab",
-  role: "Full-stack engineer",
+  role: ROLE,
+  /** Document title and social-card title of the home page. */
+  title: `${NAME} — ${ROLE}`,
   description:
     "Full-stack engineer in Lahore building web applications from UI to database — React, Next.js, Node, Nest.js and PostgreSQL. Open to remote work.",
   city: CITY,
