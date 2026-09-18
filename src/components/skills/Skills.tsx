@@ -65,7 +65,7 @@ export function Skills() {
               <dd
                 className={cn(
                   "mt-1.5 font-display text-[1.0625rem] leading-[1.6] lg:mt-2 lg:text-[1.1875rem] lg:leading-[1.75]",
-                  group.exploring ? "text-gold-deep" : "text-text",
+                  group.exploring ? "text-text lg:text-gold-deep" : "text-text",
                 )}
               >
                 <Copy text={itemsText(group)} />

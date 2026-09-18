@@ -9,7 +9,7 @@ export interface SkillGroup {
   compactItems?: readonly string[];
   /** Core groups get the gold rule; supporting groups get the hairline. */
   tier: "core" | "supporting";
-  /** Marks the aspirational group, rendered in gold. */
+  /** Marks the aspirational group, which the desktop design sets in gold. */
   exploring?: boolean;
 }
 
