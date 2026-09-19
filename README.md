@@ -120,4 +120,4 @@ There is no backend. A valid form opens the visitor's mail app with the message 
 
 ## Deploying
 
-The site is fully static, so any Next.js host works. On Vercel, import the repository and set `NEXT_PUBLIC_SITE_URL` to your production domain.
+The site is fully static, so any Next.js host works. On Vercel, import the repository; the framework and build settings are detected automatically. `NEXT_PUBLIC_SITE_URL` is optional at first, because the site falls back to the project's production URL. Set it to your own domain once you add a custom one, then redeploy.
