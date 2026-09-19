@@ -54,7 +54,7 @@ src/
     layout/       Header, mobile menu, skip link, footer
     hero/         Hero band and the "stack, top to bottom" ladder
     work/         Selected work: section, project block, project plate
-    trace/        "How I build": the interactive request-trace explorer
+    trace/        "Under the hood": the interactive request-trace explorer
     experience/   Experience timeline and education
     skills/       Skills grouped by purpose
     contact/      Contact section, links and the mailto form

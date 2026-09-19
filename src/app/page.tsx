@@ -6,7 +6,7 @@ import { SiteHeader } from "@/components/layout/SiteHeader";
 import { SkipLink } from "@/components/layout/SkipLink";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { Skills } from "@/components/skills/Skills";
-import { HowIBuild } from "@/components/trace/HowIBuild";
+import { UnderTheHood } from "@/components/trace/UnderTheHood";
 import { SelectedWork } from "@/components/work/SelectedWork";
 import { buildStructuredData } from "@/lib/structured-data";
 
@@ -19,7 +19,7 @@ export default function Home() {
       <main id="content" tabIndex={-1}>
         <Hero />
         <SelectedWork />
-        <HowIBuild />
+        <UnderTheHood />
         <ExperienceSection />
         <Skills />
         <Contact />

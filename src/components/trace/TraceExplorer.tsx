@@ -14,7 +14,7 @@ type TraceExplorerProps = {
 };
 
 /**
- * The interactive part of "How I build". Everything sits in one grid so the
+ * The interactive part of "Under the hood". Everything sits in one grid so the
  * layer list can stack under the controls on mobile and move to its own column
  * from lg, without duplicating markup.
  */

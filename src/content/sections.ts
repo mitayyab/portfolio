@@ -7,7 +7,7 @@
  */
 export const sections = {
   work: { id: "work", number: "01", title: "Selected work" },
-  howIBuild: { id: "how-i-build", number: "02", title: "How I build" },
+  underTheHood: { id: "under-the-hood", number: "02", title: "Under the hood" },
   experience: { id: "experience", number: "03", title: "Experience" },
   skills: { id: "skills", number: "05", title: "Skills" },
   contact: { id: "contact", number: "06" },

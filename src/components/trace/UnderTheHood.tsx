@@ -5,11 +5,11 @@ import { layers } from "@/content/layers";
 import { sections } from "@/content/sections";
 import { TraceExplorer } from "./TraceExplorer";
 
-const HEADING_ID = "how-i-build-heading";
+const HEADING_ID = "under-the-hood-heading";
 
 /** Section 02: what happens between a click and the database, layer by layer. */
-export function HowIBuild() {
-  const { id, number, title } = sections.howIBuild;
+export function UnderTheHood() {
+  const { id, number, title } = sections.underTheHood;
 
   return (
     <Section
