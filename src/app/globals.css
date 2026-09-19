@@ -105,14 +105,24 @@
   main:focus-visible {
     outline: none;
   }
+}
 
-  /* Stop browser autofill from painting light boxes on the dark form card. */
-  input:-webkit-autofill,
-  textarea:-webkit-autofill {
-    -webkit-text-fill-color: var(--color-ink-2);
-    caret-color: var(--color-ink-2);
-    box-shadow: 0 0 0 100rem var(--color-band-inset) inset;
-  }
+/* Stop browser autofill from painting a pale box behind the light text on the
+   dark form card. Kept outside the layers so it also beats the field's focus
+   underline (a utility), whose box-shadow would otherwise replace this cover
+   while the field is focused and let the browser's colour show through. */
+input:-webkit-autofill,
+textarea:-webkit-autofill {
+  -webkit-text-fill-color: var(--color-ink-2);
+  caret-color: var(--color-ink-2);
+  box-shadow: 0 0 0 100rem var(--color-band-inset) inset;
+}
+
+input:-webkit-autofill:focus-visible,
+textarea:-webkit-autofill:focus-visible {
+  box-shadow:
+    0 0 0 100rem var(--color-band-inset) inset,
+    0 1px 0 0 var(--color-sand);
 }
 
 /* Underline that grows from the left on hover or focus (the design's ".ul"). */
