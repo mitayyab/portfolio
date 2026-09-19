@@ -19,13 +19,17 @@ export function UnderTheHood() {
       className="mt-5 lg:mt-2.5"
       containerClassName="py-7.5 lg:py-14.5"
     >
-      <TraceExplorer layers={layers}>
-        <SectionLabel
-          number={number}
-          title={title}
-          tone="band"
-          className="mb-3.5 lg:mb-5.5"
-        />
+      <TraceExplorer
+        layers={layers}
+        label={
+          <SectionLabel
+            number={number}
+            title={title}
+            tone="band"
+            className="mb-3.5 lg:mb-5.5"
+          />
+        }
+      >
         <h2
           id={HEADING_ID}
           className="font-display text-[2.125rem] leading-[1.05] text-ink lg:text-[3rem] lg:leading-[1.02]"
