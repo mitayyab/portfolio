@@ -55,7 +55,7 @@ src/
     hero/         Hero band and the "stack, top to bottom" ladder
     work/         Selected work: section, project block, project plate
     trace/        "Under the hood": the interactive request-trace explorer
-    practice/     "How I work": how AI fits into the work
+    practice/     "How I work": the working-practices section
     experience/   Experience timeline and education
     skills/       Skills grouped by purpose
     contact/      Contact section, links and the mailto form
