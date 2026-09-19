@@ -15,7 +15,7 @@ function itemsText({ items, compactItems }: SkillGroup) {
     : joinItems(items);
 }
 
-/** Section 05: skills grouped by purpose; core groups carry the gold rule. */
+/** Section 05: skills grouped by purpose. */
 export function Skills() {
   const { id, number, title } = sections.skills;
 
@@ -43,36 +43,24 @@ export function Skills() {
       </div>
 
       <dl className="grid grid-cols-2 gap-x-5 gap-y-4.5 lg:grid-cols-4 lg:gap-x-8.5 lg:gap-y-6.5">
-        {skillGroups.map((group) => {
-          const core = group.tier === "core";
-
-          return (
-            <div
-              key={group.id}
+        {skillGroups.map((group) => (
+          <div
+            key={group.id}
+            className="border-t border-gold pt-2.75 lg:pt-3.5"
+          >
+            <dt className="font-mono text-mono-xs tracking-[0.14em] text-gold-deep uppercase lg:text-mono-sm lg:tracking-[0.15em]">
+              <Copy text={group.label} />
+            </dt>
+            <dd
               className={cn(
-                "border-t pt-2.75 lg:pt-3.5",
-                core ? "border-gold" : "border-rule",
+                "mt-1.5 font-display text-[1.0625rem] leading-[1.6] lg:mt-2 lg:text-[1.1875rem] lg:leading-[1.75]",
+                group.exploring ? "text-text lg:text-gold-deep" : "text-text",
               )}
             >
-              <dt
-                className={cn(
-                  "font-mono text-mono-xs tracking-[0.14em] uppercase lg:text-mono-sm lg:tracking-[0.15em]",
-                  core ? "text-gold-deep" : "text-muted",
-                )}
-              >
-                <Copy text={group.label} />
-              </dt>
-              <dd
-                className={cn(
-                  "mt-1.5 font-display text-[1.0625rem] leading-[1.6] lg:mt-2 lg:text-[1.1875rem] lg:leading-[1.75]",
-                  group.exploring ? "text-text lg:text-gold-deep" : "text-text",
-                )}
-              >
-                <Copy text={itemsText(group)} />
-              </dd>
-            </div>
-          );
-        })}
+              <Copy text={itemsText(group)} />
+            </dd>
+          </div>
+        ))}
       </dl>
     </Section>
   );
