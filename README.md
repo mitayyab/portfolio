@@ -37,12 +37,10 @@ NEXT_PUBLIC_SITE_URL=https://your-domain.com
 
 It drives the canonical URL, Open Graph and Twitter URLs, `sitemap.xml`, `robots.txt` and the JSON-LD graph. If it is unset the site falls back to `https://$VERCEL_PROJECT_PRODUCTION_URL` (set automatically on Vercel) and then to `http://localhost:3000`, so a build never fails for lack of it.
 
-## Before you deploy
+## Résumé and project images
 
-Two things from the design could not be supplied with the handoff, so the site is wired for them but they need your files:
-
-1. **Résumé.** The "Résumé ↓" buttons download `/ibrahim-tayyab-cv.pdf`. Put your PDF at `public/ibrahim-tayyab-cv.pdf` (the path is `site.links.resume` in `src/content/site.ts`).
-2. **Project screenshots.** The project plates show the design's striped placeholder until a screenshot is set. Add images under `public/projects/` and set `image: { src: "/projects/iris.png", alt: "…" }` on the project in `src/content/projects.ts`. They are served through `next/image` and cropped to the plate's 4:3 (mobile), 16:9 (tablet) or 16:11 (desktop) frame.
+- **Résumé.** The "Résumé ↓" buttons download `public/ibrahim-tayyab-cv.pdf`. Replace that file to update it; the path is `site.links.resume` in `src/content/site.ts`.
+- **Project images.** Each project's thumbnail lives in `public/projects/` and is set with `image: { src: "/projects/iris.jpg", alt: "…" }` on the project in `src/content/projects.ts`. Images are served through `next/image` and cropped to the plate's 4:3 (mobile), 16:9 (tablet) or 16:11 (desktop) frame, so keep the subject centred with some margin. A project without an image shows the design's striped placeholder.
 
 ## Project structure
 
