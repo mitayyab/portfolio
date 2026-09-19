@@ -95,7 +95,7 @@ Sections are numbered 01–06 in page order; change `number` in `sections.ts` to
 
 The layout is mobile-first with one structural breakpoint, `lg` (1024px), where the design's desktop layout takes over. Below it the mobile design is used at any width, with a few tablet refinements from `sm` (640px): buttons size to their label, project plates use a 16:9 frame, and body copy is capped to a readable line length. Bands stay full-bleed while content is centred in a container that grows to the design's 1280px frame, so large screens keep the design's proportions.
 
-Verified with no horizontal overflow from 320px to 2560px. At 390px and 1280px the rendered page matches the design to the pixel, apart from typographic apostrophes (the two design files disagree on straight versus curly quotes; the site uses curly throughout).
+Checked for horizontal overflow at 320px, 375px, 1024px, 1280px and 2560px. The sections that came with the design handoff were matched to it at 390px and 1280px, apart from typographic apostrophes (the two design files disagree on straight versus curly quotes; the site uses curly throughout). Added since the handoff, and so not in the design: the "How I work" section, the request-trace list aligned to the heading and the detail card, and the header tagline, which shows from 1280px up so the five nav links fit on one line.
 
 ## Accessibility
 
@@ -105,7 +105,7 @@ Verified with no horizontal overflow from 320px to 2560px. At 390px and 1280px t
 - The trace explorer is built from real buttons with `aria-current="step"`, announces its state through a polite status region (on start and when a layer settles, not on every step), and can be interrupted by picking any layer.
 - The contact form has explicit labels, `required`, per-field error text linked with `aria-describedby`, `aria-invalid`, and moves focus to the first invalid field on submit.
 - Every palette pair used for text meets WCAG AA contrast (lowest is 4.56:1). Hover-only effects are gated to devices that hover and respect `prefers-reduced-motion`.
-- axe-core reports no violations on desktop, tablet, mobile, with the menu open, and with form errors showing.
+- axe-core reports no violations on the desktop and mobile layouts.
 
 ## SEO and performance
 
