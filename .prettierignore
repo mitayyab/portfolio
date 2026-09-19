@@ -3,3 +3,5 @@ node_modules
 package-lock.json
 *.woff
 *.woff2
+# Search Console checks this file byte for byte, so it must not be reformatted.
+public/google*.html
