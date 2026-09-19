@@ -6,7 +6,7 @@ import { cn } from "@/lib/cn";
 
 export const EXPERIENCE_HEADING_ID = "experience-heading";
 
-/** Section 03: roles on a gold rule, newest first. */
+/** Section 04: roles on a gold rule, newest first. */
 export function ExperienceTimeline() {
   const { number, title } = sections.experience;
 

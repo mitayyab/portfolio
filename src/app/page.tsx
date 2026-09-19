@@ -4,6 +4,7 @@ import { Hero } from "@/components/hero/Hero";
 import { SiteFooter } from "@/components/layout/SiteFooter";
 import { SiteHeader } from "@/components/layout/SiteHeader";
 import { SkipLink } from "@/components/layout/SkipLink";
+import { HowIWork } from "@/components/practice/HowIWork";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { Skills } from "@/components/skills/Skills";
 import { UnderTheHood } from "@/components/trace/UnderTheHood";
@@ -20,6 +21,7 @@ export default function Home() {
         <Hero />
         <SelectedWork />
         <UnderTheHood />
+        <HowIWork />
         <ExperienceSection />
         <Skills />
         <Contact />
