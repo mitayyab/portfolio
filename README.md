@@ -55,6 +55,7 @@ src/
     hero/         Hero band and the "stack, top to bottom" ladder
     work/         Selected work: section, project block, project plate
     trace/        "Under the hood": the interactive request-trace explorer
+    practice/     "How I work": how AI fits into the work
     experience/   Experience timeline and education
     skills/       Skills grouped by purpose
     contact/      Contact section, links and the mailto form
@@ -68,7 +69,7 @@ src/
 
 Rules the codebase follows:
 
-- **Content is separate from markup.** Facts and lists (site details, projects, roles, education, skills, the request layers) live in typed files under `src/content`; components only render them. Section headings and intro copy stay with their section component.
+- **Content is separate from markup.** Facts and lists (site details, projects, roles, education, skills, the request layers, the working practices) live in typed files under `src/content`; components only render them. Section headings and intro copy stay with their section component.
 - **Server components by default.** Only `MobileMenu`, `TraceExplorer` and `ContactForm` are client components, and the trace explorer receives its intro as server-rendered children.
 - **No file over 200 lines** (enforced by ESLint for `src/**/*.{ts,tsx}`); split a component when it grows.
 
@@ -80,6 +81,7 @@ Rules the codebase follows:
 | Section anchors, numbers and titles          | `src/content/sections.ts`                               |
 | Projects                                     | `src/content/projects.ts`                               |
 | The eight request layers                     | `src/content/layers.ts`                                 |
+| The "How I work" points                      | `src/content/practices.ts`                              |
 | Roles and education                          | `src/content/experience.ts`, `src/content/education.ts` |
 | Skills and "currently exploring"             | `src/content/skills.ts`                                 |
 | Hero stack ladder                            | `src/content/stack.ts`                                  |
@@ -87,7 +89,7 @@ Rules the codebase follows:
 
 The design words some copy differently on phones and desktops. Those fields are typed as `ResponsiveText` (`string` or `{ compact, full }`) and rendered with `<Copy>`, which shows `compact` below the `lg` breakpoint and `full` from it.
 
-The design numbers its sections 01, 02, 03, 05, 06 (there is no 04). That is reproduced as designed; change `number` in `sections.ts` to renumber.
+Sections are numbered 01–06 in page order; change `number` in `sections.ts` to renumber.
 
 ## Responsive behaviour
 
