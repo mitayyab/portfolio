@@ -23,7 +23,7 @@ npm run dev          # http://localhost:3000
 | `npm run build`        | Production build                          |
 | `npm start`            | Serve the production build                |
 | `npm run lint`         | ESLint, including the 200-line file limit |
-| `npm run typecheck`    | `tsc --noEmit`                            |
+| `npm run typecheck`    | `next typegen`, then `tsc --noEmit`       |
 | `npm run format`       | Prettier, write                           |
 | `npm run format:check` | Prettier, check only                      |
 
