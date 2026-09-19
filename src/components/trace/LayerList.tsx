@@ -9,7 +9,10 @@ type LayerListProps = {
   className?: string;
 };
 
-/** The eight layers as buttons; layers already passed by the trace keep a marker. */
+/**
+ * The eight layers as buttons; layers already passed by the trace keep a marker.
+ * From lg the rows share whatever height the list is stretched to.
+ */
 export function LayerList({
   layers,
   active,
@@ -27,13 +30,13 @@ export function LayerList({
         const isPassed = index < active;
 
         return (
-          <li key={layer.label}>
+          <li key={layer.label} className="lg:flex-1">
             <button
               type="button"
               onClick={() => onSelect(index)}
               aria-current={isActive ? "step" : undefined}
               className={cn(
-                "grid w-full cursor-pointer grid-cols-[1.125rem_1fr_auto] items-center gap-2.75 rounded-card border px-3.25 py-2.75 text-left transition-[background-color,border-color] duration-250 hover:border-sand lg:grid-cols-[1.375rem_1fr_auto] lg:gap-3.5 lg:px-4 lg:py-3.25",
+                "grid w-full cursor-pointer grid-cols-[1.125rem_1fr_auto] items-center gap-2.75 rounded-card border px-3.25 py-2.75 text-left transition-[background-color,border-color] duration-250 hover:border-sand lg:h-full lg:grid-cols-[1.375rem_1fr_auto] lg:gap-3.5 lg:px-4 lg:py-3.25",
                 isActive
                   ? "border-sand bg-band-hover"
                   : "border-band-border bg-band-inset",

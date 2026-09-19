@@ -47,11 +47,12 @@ export function TraceExplorer({ layers, label, children }: TraceExplorerProps) {
         layers={layers}
         active={active}
         onSelect={select}
-        className="mt-4 lg:col-start-2 lg:row-span-3 lg:row-start-2 lg:mt-0"
+        className="mt-4 lg:col-start-2 lg:row-span-3 lg:row-start-2 lg:mt-0 lg:self-stretch"
       />
 
       <LayerDetail
         layer={layer}
+        layers={layers}
         className="mt-4 lg:col-start-1 lg:row-start-4 lg:mt-7.5"
       />
 
