@@ -11,14 +11,6 @@ export function Hero() {
       className="overflow-hidden"
       containerClassName="relative pt-6.5 pb-8 lg:pb-15.5"
     >
-      {/* Decorative ghost numeral, deliberately behind the content. */}
-      <span
-        aria-hidden="true"
-        className="pointer-events-none absolute -top-6.5 -right-1.5 font-display text-[9.375rem] leading-none text-sand/9 tabular-nums lg:-top-14 lg:right-7.5 lg:text-[18.75rem]"
-      >
-        03
-      </span>
-
       <div className="relative lg:grid lg:grid-cols-[1.25fr_0.75fr] lg:items-end lg:gap-14">
         <div>
           <p className="mb-4 inline-flex items-center gap-2 font-mono text-mono-xs tracking-[0.15em] text-sand uppercase lg:mb-6 lg:gap-2.25 lg:text-mono-md lg:tracking-[0.16em]">

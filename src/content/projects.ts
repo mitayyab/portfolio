@@ -35,6 +35,10 @@ export const projects: readonly Project[] = [
         "Iris is a platform built for the research community — scientists create a presence, describe what they work on, and connect with people working on adjacent problems.",
       full: "Iris is a platform built for the research community — scientists create a presence, describe what they work on, and connect with people working on adjacent problems. It turns a scattered field into something you can search, browse and join.",
     },
+    image: {
+      src: "/projects/iris.jpg",
+      alt: "Illustration of a network of scientist profiles connected by thin gold lines to a central eye-shaped node, with faint petri dishes and cell outlines behind.",
+    },
   },
   {
     numeral: "II",
@@ -48,6 +52,10 @@ export const projects: readonly Project[] = [
         "Candidates sit scheduled, timed papers in the browser while the board administers sessions, candidates and results from one place.",
       full: "An online examination platform for the QABA board: candidates sit scheduled, timed papers in the browser while the board administers sessions, candidates and results from one place. Everything is built around a sitting that has to stay fair and recoverable from start to finish.",
     },
+    image: {
+      src: "/projects/exam-sessions.jpg",
+      alt: "Isometric illustration of an examination hall: rows of desks with laptops, each with a small clock or hourglass, and a large wall clock above.",
+    },
   },
   {
     numeral: "III",
@@ -60,6 +68,10 @@ export const projects: readonly Project[] = [
       compact:
         "A UK vehicle marketplace where sellers list stock and buyers browse, compare and enquire — listings, search and the conversations between both sides.",
       full: "A UK vehicle marketplace where sellers list stock and buyers browse, compare and enquire. The product spans the listing lifecycle, search and the conversations between both sides of a sale.",
+    },
+    image: {
+      src: "/projects/carco.jpg",
+      alt: "Line illustration of three cars in side view, the middle one outlined in gold, beneath a map pin, a price tag and two speech bubbles.",
     },
   },
 ];
