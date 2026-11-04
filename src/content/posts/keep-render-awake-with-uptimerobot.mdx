@@ -1,0 +1,124 @@
+export const metadata = {
+  title: "Stop your free Render server from sleeping with UptimeRobot",
+  description:
+    "Why free Render services take a minute to wake up, and how a five-minute health check keeps your demo fast for recruiters and users.",
+  publishedAt: "2026-11-04",
+  series: "hosting",
+  tools: ["Render", "UptimeRobot"],
+  level: "Beginner",
+  freeTier: {
+    headline: "50 monitors free",
+    facts: [
+      { label: "Monitors", value: "50" },
+      { label: "Check interval", value: "5 min" },
+      { label: "Render hours", value: "750 / mo" },
+      { label: "Render sleeps after", value: "15 min" },
+    ],
+    verifiedAt: "2026-11-04",
+    pricingUrl: "https://uptimerobot.com/pricing/",
+  },
+};
+
+You deploy your API on Render's free plan, share the link on your CV, and a recruiter clicks it the next morning. They wait. And wait. Around a minute later the page finally loads, if they're still there.
+
+That delay isn't a bug in your code. It's how Render's free plan works, and you can fix it for free in about ten minutes.
+
+## Why your Render server falls asleep
+
+Render's free web services **spin down after 15 minutes without inbound traffic**. When the next request arrives, Render starts the service again, which takes about a minute. That first visitor pays the price.
+
+Render does this so it can offer free hosting at all: an idle service uses no machines. In return, a sleeping service also stops using your free hours, which matters later.
+
+<Callout type="tip">
+  The 15-minute timer counts HTTP requests and WebSocket messages. Any real
+  request resets it, so a site with steady traffic never sleeps.
+</Callout>
+
+## The fix: send it a request every five minutes
+
+If something requests your service more often than every 15 minutes, the timer never runs out and the service never sleeps. That's the job for [UptimeRobot](https://uptimerobot.com): a free monitoring tool that sends a request to a URL on a schedule and emails you if the request fails.
+
+On the free plan you get 50 monitors with a check every 5 minutes. Five minutes is well inside Render's 15-minute window, so one monitor keeps one service awake, and you get downtime alerts as a bonus.
+
+## Step 1: add a health check route
+
+You could point UptimeRobot at your home route, but a dedicated health route is better. It's cheap, it doesn't touch your database, and it makes the monitor's purpose obvious.
+
+In an Express app:
+
+```js title="server.js"
+app.get("/health", (req, res) => {
+  res.status(200).json({ status: "ok" });
+});
+```
+
+In a Next.js app, add a route handler:
+
+```ts title="app/api/health/route.ts"
+export function GET() {
+  return Response.json({ status: "ok" });
+}
+```
+
+Deploy, then open `https://your-app.onrender.com/health` in a browser. You should see `{"status":"ok"}`.
+
+<Callout type="gotcha">
+  Keep the health route free of database queries. A ping every five minutes is
+  around 8,600 requests a month, and you don't want each one waking a free
+  database or using up its connection limit.
+</Callout>
+
+## Step 2: create the monitor in UptimeRobot
+
+1. Sign up at [uptimerobot.com](https://uptimerobot.com) (the free plan doesn't ask for a card).
+2. Create a new monitor and choose the **HTTP(s)** type.
+3. Give it a name you'll recognise, like `my-api (Render)`.
+4. Paste your health URL: `https://your-app.onrender.com/health`.
+5. Set the interval to **5 minutes**, the shortest the free plan allows.
+6. Pick your email as the alert contact, so you hear about real outages.
+7. Save. The first check runs straight away.
+
+## Step 3: check that it's working
+
+Give it half an hour, then look at two places:
+
+- **Render's logs** should show a `GET /health` roughly every five minutes.
+- **UptimeRobot's dashboard** should show the monitor as up, with response times of a few hundred milliseconds instead of a minute.
+
+If you see an occasional slow check, that's usually a deploy or restart. Render still cold-starts a service after you deploy, and nothing can prevent that.
+
+## Do the maths before you add a second service
+
+This is the part most tutorials skip. Render gives each workspace **750 free instance hours a month**, shared by all its free web services. A service kept awake all month uses one hour per hour:
+
+| Services kept awake | Hours used in a 31-day month | Fits in 750? |
+| ------------------- | ---------------------------- | ------------ |
+| 1                   | 744                          | Yes          |
+| 2                   | 1,488                        | No           |
+
+<Callout type="warning">
+  When a workspace runs out of free hours, Render suspends **all** of its free
+  web services until the next month. Keep only one free service awake around the
+  clock; let the others sleep, or move them to a paid instance.
+</Callout>
+
+## A few more things to know
+
+- **The filesystem is temporary.** Files your app writes to disk are lost when the service spins down, restarts or redeploys. Keep uploads in object storage and data in a database.
+- **Free plans are for side projects.** Render's free tier is meant for hobby projects and testing, and UptimeRobot's free plan has its own terms on commercial use. Check both if the app has paying users.
+- **You get a status page.** UptimeRobot can publish a public status page from your monitors. Linking it from your portfolio is a nice signal that you care about reliability.
+
+## Other ways to do the same thing
+
+- [cron-job.org](https://cron-job.org) calls a URL on a schedule for free. It's handy if you only want the keep-alive and no alerts.
+- **GitHub Actions** scheduled workflows can send the request too, but runs can be delayed at busy times, so they're less reliable as a keep-alive.
+- **A paid Render instance** never sleeps. Once real users depend on the app, it's the right answer.
+
+## Recap
+
+1. Render's free services sleep after 15 minutes idle and take about a minute to wake.
+2. Add a cheap `/health` route that skips the database.
+3. Point an UptimeRobot HTTP(s) monitor at it every 5 minutes.
+4. Keep one service awake per workspace, so you stay inside the 750 free hours.
+
+Your demo now loads the moment a recruiter clicks it, and you'll know before they do if it ever goes down.
