@@ -1,6 +1,6 @@
 # Muhammad Ibrahim Tayyab — portfolio
 
-Personal portfolio site for a full-stack engineer, built from the desktop (1280px) and mobile (390px) design handoff. Server-rendered, statically generated, and fast: three small client components (mobile menu, request-trace explorer, contact form) and no runtime dependencies beyond Next.js and React.
+Personal portfolio site for a full-stack engineer, built from the desktop (1280px) and mobile (390px) design handoff. Server-rendered, statically generated, and fast: a few small client components (mobile menu, request-trace explorer, contact form, and the blog's search, contents, progress bar and copy buttons) and no runtime dependencies beyond Next.js, React and the MDX runtime.
 
 ## Stack
 
@@ -8,6 +8,7 @@ Personal portfolio site for a full-stack engineer, built from the desktop (1280p
 - TypeScript in strict mode
 - Tailwind CSS 4, with the design's tokens defined in `src/app/globals.css`
 - Self-hosted Cormorant Garamond and Lora via `next/font/local`
+- Blog posts in MDX (`@next/mdx`), with GitHub-flavoured Markdown and code highlighted at build time by Shiki (`rehype-pretty-code`)
 - ESLint (Next.js config) and Prettier (with Tailwind class sorting)
 
 ## Getting started
@@ -48,6 +49,7 @@ It drives the canonical URL, Open Graph and Twitter URLs, `sitemap.xml`, `robots
 src/
   app/            Routes and metadata: layout, page, not-found, sitemap, robots,
                   Open Graph image and icons
+    blog/         Blog index, post pages, per-post Open Graph images, RSS feed
   components/
     layout/       Header, mobile menu, skip link, footer
     hero/         Hero band and the "stack, top to bottom" ladder
@@ -57,18 +59,23 @@ src/
     experience/   Experience timeline and education
     skills/       Skills grouped by purpose
     contact/      Contact section, links and the mailto form
+    blog/         Blog index (search, series filters), post layout and the
+                  MDX elements posts render with
     seo/          JSON-LD component
     ui/           Shared primitives: Container, Section, SectionLabel, buttons, Copy
   content/        All copy and data, typed (see below)
+    posts/        One MDX file per blog post; the file name is the URL slug
   hooks/          useLayerTrace
-  lib/            cn, fonts, site URL, structured data, contact validation
+  lib/            cn, fonts, site URL, structured data, contact validation,
+                  post loading, dates, Open Graph helpers
+  mdx-components.tsx  Elements and components available in every post
   assets/fonts/   Self-hosted font files and their licences
 ```
 
 Rules the codebase follows:
 
 - **Content is separate from markup.** Facts and lists (site details, projects, roles, education, skills, the request layers, the working practices) live in typed files under `src/content`; components only render them. Section headings and intro copy stay with their section component.
-- **Server components by default.** Only `MobileMenu`, `TraceExplorer` and `ContactForm` are client components, and the trace explorer receives its intro as server-rendered children.
+- **Server components by default.** Only `MobileMenu`, `TraceExplorer`, `ContactForm` and the blog's `BlogIndex`, `TableOfContents`, `ReadingProgress` and `CopyButton` are client components, and the trace explorer receives its intro as server-rendered children.
 - **No file over 200 lines** (enforced by ESLint for `src/**/*.{ts,tsx}`); split a component when it grows.
 
 ## Editing content
@@ -84,10 +91,39 @@ Rules the codebase follows:
 | Skills and "currently exploring"             | `src/content/skills.ts`                                 |
 | Hero stack ladder                            | `src/content/stack.ts`                                  |
 | Colours, type sizes, radii, shadows          | `@theme` in `src/app/globals.css`                       |
+| Blog intro, series, "On the writing desk"    | `src/content/blog.ts`                                   |
+| Blog posts                                   | `src/content/posts/*.mdx`                               |
 
 The design words some copy differently on phones and desktops. Those fields are typed as `ResponsiveText` (`string` or `{ compact, full }`) and rendered with `<Copy>`, which shows `compact` below the `lg` breakpoint and `full` from it.
 
 Sections are numbered 01–06 in page order; change `number` in `sections.ts` to renumber.
+
+## Writing a blog post
+
+Add `src/content/posts/<slug>.mdx`. It starts with a `metadata` export typed by `PostMeta` in `src/content/blog.ts`:
+
+```js
+export const metadata = {
+  title: "Free image storage with Backblaze B2",
+  description:
+    "One or two sentences; used as the lede, meta description and RSS summary.",
+  publishedAt: "2026-11-11",
+  // updatedAt: "2026-12-01",  shown as "Updated" when set
+  series: "storage", // a key of `series` in src/content/blog.ts
+  tools: ["Backblaze B2", "Cloudflare"],
+  level: "Beginner",
+  freeTier: {
+    headline: "10 GB free", // badge on cards and the social image
+    facts: [{ label: "Storage", value: "10 GB" }],
+    verifiedAt: "2026-11-11", // when the limits were last checked
+    pricingUrl: "https://www.backblaze.com/cloud-storage/pricing",
+  },
+};
+```
+
+Then write Markdown. `##` headings become the "On this page" contents. Fenced code blocks take a language and an optional filename (` ```js title="server.js" `), and `<Callout type="tip | gotcha | warning">` adds an aside. The post is picked up by the index, its series navigation, the sitemap, the RSS feed (`/blog/feed.xml`) and its own Open Graph image with no other changes; remove its title from `upcomingPosts` if it was listed there.
+
+Free tiers change. When you re-check a post's limits, update `verifiedAt` (and `updatedAt` if the text changes).
 
 ## Responsive behaviour
 
