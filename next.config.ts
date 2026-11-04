@@ -1,3 +1,4 @@
+import createMDX from "@next/mdx";
 import type { NextConfig } from "next";
 
 const securityHeaders = [
@@ -20,4 +21,24 @@ const nextConfig: NextConfig = {
   },
 };
 
-export default nextConfig;
+// Plugins are named by string so Turbopack can load them. Code is highlighted
+// at build time; the background comes from the site's graphite palette instead
+// of the theme's.
+const withMDX = createMDX({
+  options: {
+    remarkPlugins: ["remark-gfm"],
+    rehypePlugins: [
+      "rehype-slug",
+      [
+        "rehype-pretty-code",
+        {
+          theme: "vitesse-dark",
+          keepBackground: false,
+          defaultLang: { block: "plaintext" },
+        },
+      ],
+    ],
+  },
+});
+
+export default withMDX(nextConfig);
