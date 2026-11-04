@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useEffect, useRef } from "react";
 import { buttonClass } from "@/components/ui/button-styles";
 import { ResumeLink } from "@/components/ui/ResumeLink";
@@ -70,7 +71,7 @@ export function MobileMenu() {
           <ul role="list">
             {navItems.map((item) => (
               <li key={item.href} className="border-b border-band-border">
-                <a
+                <Link
                   href={item.href}
                   onClick={close}
                   className="flex items-baseline justify-between py-5 font-display text-[2rem] leading-none text-ink"
@@ -82,7 +83,7 @@ export function MobileMenu() {
                   >
                     →
                   </span>
-                </a>
+                </Link>
               </li>
             ))}
           </ul>

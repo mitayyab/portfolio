@@ -31,9 +31,9 @@ export function SiteHeader() {
           >
             {navItems.map((item) => (
               <li key={item.href}>
-                <a href={item.href} className="underline-grow text-text">
+                <Link href={item.href} className="underline-grow text-text">
                   {item.label}
-                </a>
+                </Link>
               </li>
             ))}
           </ul>
