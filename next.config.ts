@@ -22,8 +22,8 @@ const nextConfig: NextConfig = {
 };
 
 // Plugins are named by string so Turbopack can load them. Code is highlighted
-// at build time; the background comes from the site's graphite palette instead
-// of the theme's.
+// at build time. The theme's inline colours are kept so untokenised text gets
+// its default foreground; CodeBlock swaps the background for the site's own.
 const withMDX = createMDX({
   options: {
     remarkPlugins: ["remark-gfm"],
@@ -31,11 +31,7 @@ const withMDX = createMDX({
       "rehype-slug",
       [
         "rehype-pretty-code",
-        {
-          theme: "vitesse-dark",
-          keepBackground: false,
-          defaultLang: { block: "plaintext" },
-        },
+        { theme: "vitesse-dark", defaultLang: { block: "plaintext" } },
       ],
     ],
   },
