@@ -110,6 +110,7 @@ export const metadata = {
   publishedAt: "2026-11-11",
   // updatedAt: "2026-12-01",  shown as "Updated" when set
   series: "storage", // a key of `series` in src/content/blog.ts
+  // order: 1,  place in the series, when it should be read before older posts
   tools: ["Backblaze B2", "Cloudflare"],
   level: "Beginner",
   freeTier: {
