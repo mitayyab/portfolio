@@ -1,0 +1,222 @@
+export const metadata = {
+  title:
+    "Deploy a full-stack app for free: Vercel for the frontend, Render for the API",
+  description:
+    "A step-by-step guide to putting a Next.js frontend and a Node.js API online for $0, wiring them together with environment variables and CORS, and avoiding the mistakes that break most first deploys.",
+  publishedAt: "2026-11-06",
+  series: "hosting",
+  order: 1,
+  tools: ["Vercel", "Render"],
+  level: "Beginner",
+  freeTier: {
+    headline: "$0 frontend + API",
+    facts: [
+      { label: "Vercel transfer", value: "100 GB / mo" },
+      { label: "Vercel CPU", value: "4 h / mo" },
+      { label: "Render hours", value: "750 / mo" },
+      { label: "Render sleeps after", value: "15 min" },
+    ],
+    verifiedAt: "2026-11-06",
+    pricingUrl: "https://vercel.com/pricing",
+  },
+};
+
+You've built an app with a React or Next.js frontend and a Node.js API, and it works on `localhost`. Now you want a real URL you can put on your CV. This guide gets both halves online for free, connected to each other, in about half an hour.
+
+## The setup: two hosts, each doing what it's good at
+
+- **Vercel** hosts the frontend. It's made by the team behind Next.js, deploys every push automatically and serves your pages from a global CDN.
+- **Render** hosts the API. Its free web services run an ordinary long-lived Node.js server, so your Express code works as it does on your machine.
+
+You could run an Express API on Vercel too, but keeping the API on Render means you deploy it exactly as you run it locally. For a first deploy, fewer surprises is worth a lot.
+
+<Callout type="tip">
+  Both free plans are meant for personal and hobby projects. Vercel's Hobby plan
+  is for non-commercial use, so move to a paid plan before you charge anyone
+  money.
+</Callout>
+
+## Step 1: get the repo ready
+
+This guide uses one repository with a folder for each half. Two separate repos work just as well; you'd skip the "root directory" settings below.
+
+```plaintext
+my-app/
+  web/   Next.js frontend → Vercel
+  api/   Express API      → Render
+```
+
+Two things in the API decide whether Render can run it. It has to listen on the port Render gives it, and on every network interface, not only `localhost`:
+
+```js title="api/server.js"
+import express from "express";
+import cors from "cors";
+import { corsOptions } from "./cors.js";
+
+const app = express();
+const PORT = process.env.PORT || 10000;
+
+app.use(cors(corsOptions));
+app.use(express.json());
+
+app.get("/health", (req, res) => {
+  res.status(200).json({ status: "ok" });
+});
+
+app.listen(PORT, "0.0.0.0", () => {
+  console.log(`API listening on port ${PORT}`);
+});
+```
+
+Then give `api/package.json` a start script, so Render knows how to run it:
+
+```json title="api/package.json"
+{
+  "type": "module",
+  "scripts": {
+    "start": "node server.js"
+  }
+}
+```
+
+Finally, list every environment variable each half needs in an `.env.example`, without the real values. Future you (and anyone cloning the repo) will thank you:
+
+```bash title="api/.env.example"
+CORS_ORIGINS=http://localhost:3000
+DATABASE_URL=
+```
+
+<Callout type="warning">
+  Never commit a real `.env` file. Check that `.env` is in your `.gitignore`
+  before your first push; secrets in Git history are hard to remove.
+</Callout>
+
+## Step 2: allow your frontend with CORS
+
+Your frontend and API live on different domains, so the browser blocks the frontend's requests unless the API says that origin is allowed. That's CORS, and it causes more failed first deploys than anything else.
+
+Resist `origin: "*"`. Allow your own origins instead, read from an environment variable so you can change them without a code change:
+
+```js title="api/cors.js"
+const allowedOrigins = (process.env.CORS_ORIGINS ?? "")
+  .split(",")
+  .map((origin) => origin.trim())
+  .filter(Boolean);
+
+// Vercel preview deployments for this project, e.g.
+// https://my-app-a1b2c3d4-my-team.vercel.app
+const previewOrigin = /^https:\/\/my-app-[a-z0-9-]+-my-team\.vercel\.app$/;
+
+export const corsOptions = {
+  origin(origin, callback) {
+    // Requests without an Origin header (curl, health checks) aren't
+    // cross-origin browser requests, so CORS doesn't apply to them.
+    if (
+      !origin ||
+      allowedOrigins.includes(origin) ||
+      previewOrigin.test(origin)
+    ) {
+      return callback(null, true);
+    }
+    callback(new Error(`Origin ${origin} is not allowed by CORS`));
+  },
+};
+```
+
+Replace `my-app` with your Vercel project name and `my-team` with your Vercel account or team slug. You'll see both in your first preview URL.
+
+<Callout type="gotcha">
+  An origin is the scheme, host and port only, with no path and no trailing
+  slash. `https://my-app.vercel.app` matches; `https://my-app.vercel.app/`
+  doesn't, and the browser will block every request.
+</Callout>
+
+## Step 3: deploy the API to Render
+
+1. Sign in to [Render](https://render.com) with GitHub and create a new **Web Service**.
+2. Pick your repository and set **Root Directory** to `api`.
+3. Set the runtime to **Node**, the build command to `npm install` and the start command to `npm start`.
+4. Choose the **Free** instance type.
+5. Under environment variables, add `CORS_ORIGINS` with `http://localhost:3000` for now, plus anything else from your `.env.example`.
+6. Create the service and watch the logs until you see `API listening on port 10000`.
+
+Render gives you a URL like `https://my-app-api.onrender.com`. Open `/health` on it in your browser; you should see `{"status":"ok"}`. From now on, every push to your main branch redeploys the API.
+
+## Step 4: deploy the frontend to Vercel
+
+In the frontend, read the API's address from an environment variable rather than hard-coding it:
+
+```ts title="web/lib/api.ts"
+const API_URL = process.env.NEXT_PUBLIC_API_URL;
+
+export async function getTodos() {
+  const response = await fetch(`${API_URL}/todos`);
+  if (!response.ok) {
+    throw new Error(`API responded with ${response.status}`);
+  }
+  return response.json();
+}
+```
+
+Then deploy it:
+
+1. Sign in to [Vercel](https://vercel.com) with GitHub and add a new project from your repository.
+2. Set **Root Directory** to `web`. Vercel detects Next.js and fills in the build settings.
+3. Add the environment variable `NEXT_PUBLIC_API_URL` with your Render URL, `https://my-app-api.onrender.com`.
+4. Deploy.
+
+<Callout type="gotcha">
+  Variables starting with `NEXT_PUBLIC_` are baked into the JavaScript at build
+  time. If you add or change one after deploying, redeploy, or the browser keeps
+  the old value. In a Vite app the prefix is `VITE_` instead, and the same rule
+  applies.
+</Callout>
+
+## Step 5: connect the two
+
+Your frontend now has a URL like `https://my-app.vercel.app`, but the API doesn't trust it yet. Back in Render, change `CORS_ORIGINS` to include it:
+
+```plaintext
+https://my-app.vercel.app,http://localhost:3000
+```
+
+Save, and let Render redeploy. Open your Vercel URL, open the browser's developer tools on the **Network** tab, and use the app. Requests to `onrender.com` should come back with status `200`.
+
+## Step 6: preview deployments
+
+Every pull request on Vercel gets its own preview URL, which is a great way to check a change before it goes live. Those previews call the same API, which is why `cors.js` above allows them with a pattern instead of listing each one. If your previews should use a separate staging API, set a different `NEXT_PUBLIC_API_URL` for the **Preview** environment in Vercel's settings.
+
+## When something goes wrong
+
+| What you see                            | Usual cause                                                          | Fix                                                                        |
+| --------------------------------------- | -------------------------------------------------------------------- | -------------------------------------------------------------------------- |
+| "Blocked by CORS policy" in the console | Origin missing from `CORS_ORIGINS`, or a trailing slash              | Add the exact origin and redeploy the API                                  |
+| `undefined/todos` in the request URL    | Variable missing the `NEXT_PUBLIC_` prefix, or added after the build | Fix the name and redeploy the frontend                                     |
+| Render deploy never finishes            | Server listens on `localhost` or a fixed port                        | Listen on `process.env.PORT` and `0.0.0.0`                                 |
+| "Mixed content" error                   | Frontend calls the API over `http://`                                | Use the `https://` Render URL                                              |
+| First request takes about a minute      | The free Render service was asleep                                   | [Keep it awake with UptimeRobot](/blog/keep-render-awake-with-uptimerobot) |
+
+## Know the limits
+
+Neither free plan charges you by surprise, but both have ceilings worth knowing:
+
+- **Vercel Hobby** includes 100 GB of data transfer and 4 hours of active CPU a month. Hobby has hard limits instead of overage billing, so a project that hits one stops serving until the usage resets or you upgrade.
+- **Render's free plan** gives each workspace 750 instance hours a month. A free service sleeps after 15 minutes without traffic and takes about a minute to wake up.
+- **Render's free filesystem is temporary.** Anything the API writes to disk disappears on a redeploy, restart or spin-down. Keep data in a database and files in object storage.
+
+<Callout type="warning">
+  If your app logs users in with cookies, `vercel.app` and `onrender.com` are
+  different sites, so most browsers treat the API's cookies as third-party and
+  may drop them. Put both halves under one domain you own (`app.example.com` and
+  `api.example.com`), or send a token in the `Authorization` header instead.
+</Callout>
+
+## Recap
+
+1. Split the app: frontend on Vercel, API on Render.
+2. Make the API listen on `process.env.PORT` and `0.0.0.0`, with a `start` script.
+3. Allow your frontend's exact origins with CORS, read from an environment variable.
+4. Point the frontend at the API with `NEXT_PUBLIC_API_URL`, and redeploy after changing it.
+5. Add the Vercel URL to `CORS_ORIGINS` and check the Network tab.
+
+Your app is live. Next in this series: [stop the free Render API from sleeping](/blog/keep-render-awake-with-uptimerobot), so the first visitor doesn't wait a minute for it.
