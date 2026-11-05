@@ -47,6 +47,11 @@ export interface PostMeta {
   publishedAt: string;
   updatedAt?: string;
   series: SeriesId;
+  /**
+   * Place in the series' reading order, lowest first, for a post written after
+   * one it should come before. Posts without it follow, oldest first.
+   */
+  order?: number;
   /** The free tool (or tools) the post is built around. */
   tools: readonly string[];
   level: "Beginner" | "Intermediate";

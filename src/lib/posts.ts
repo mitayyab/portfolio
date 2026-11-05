@@ -122,14 +122,19 @@ export interface SeriesPosition {
   next?: Post;
 }
 
-/** Where a post sits in its series, oldest first, with its neighbours. */
+/** Reading order within a series: explicit `order` first, then oldest first. */
+const bySeriesOrder = (a: Post, b: Post) =>
+  (a.meta.order ?? Infinity) - (b.meta.order ?? Infinity) ||
+  a.meta.publishedAt.localeCompare(b.meta.publishedAt);
+
+/** Where a post sits in its series, in reading order, with its neighbours. */
 export function seriesPosition(
   post: Post,
   all: readonly Post[],
 ): SeriesPosition {
   const inSeries = all
     .filter((candidate) => candidate.meta.series === post.meta.series)
-    .sort((a, b) => a.meta.publishedAt.localeCompare(b.meta.publishedAt));
+    .sort(bySeriesOrder);
   const index = inSeries.findIndex((candidate) => candidate.slug === post.slug);
 
   return {
