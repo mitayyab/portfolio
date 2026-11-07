@@ -63,10 +63,6 @@ export const upcomingPosts: readonly { title: string; series: SeriesId }[] = [
   { title: "Free image storage with Backblaze B2", series: "storage" },
   { title: "Send transactional email for free with Resend", series: "email" },
   {
-    title: "Privacy-friendly analytics for free with Umami",
-    series: "monitoring",
-  },
-  {
     title: "How to structure a Next.js project that scales",
     series: "cleanCode",
   },

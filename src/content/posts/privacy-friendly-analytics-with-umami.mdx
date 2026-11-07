@@ -1,0 +1,195 @@
+export const metadata = {
+  title: "Privacy-friendly analytics for free with Umami",
+  description:
+    "See who visits your portfolio, where they come from and what they click, without cookies, a consent banner or a heavy script. Set up Umami Cloud in Next.js in fifteen minutes.",
+  publishedAt: "2026-11-08",
+  series: "monitoring",
+  tools: ["Umami"],
+  level: "Beginner",
+  freeTier: {
+    headline: "100K events / mo free",
+    facts: [
+      { label: "Events", value: "100K / mo" },
+      { label: "Data kept", value: "6 months" },
+      { label: "Cookies", value: "None" },
+      { label: "Cost", value: "$0" },
+    ],
+    verifiedAt: "2026-11-08",
+    pricingUrl: "https://umami.is/pricing",
+  },
+};
+
+You've shipped your portfolio and shared it in a few job applications. Is anyone actually opening it? Which projects do they look at? Do they download your résumé? Without analytics you're guessing.
+
+Google Analytics answers those questions, but it brings cookies, a consent banner and a script heavier than most portfolios. For a personal site there's a lighter option: Umami.
+
+## Why Umami
+
+[Umami](https://umami.is) is open-source web analytics built around privacy:
+
+- **No cookies.** It doesn't store anything in the visitor's browser or collect personal data, so in most cases you don't need a cookie banner. If your site has specific legal requirements, check them yourself.
+- **A small script.** Your pages stay fast, which matters more to a portfolio than any chart.
+- **One simple dashboard.** Visitors, pages, referrers, countries, devices and your own events on a single screen, with nothing to configure.
+
+You can self-host Umami for free, but **Umami Cloud** is the quickest start. Its free Hobby plan covers 100,000 events a month and keeps six months of data, far more than a portfolio or blog needs.
+
+<Callout type="tip">
+  Every page view and every custom event counts towards the monthly 100,000. A
+  portfolio with a few hundred visitors a month uses a tiny fraction of it.
+</Callout>
+
+## Step 1: create your website in Umami Cloud
+
+1. Sign up at [cloud.umami.is](https://cloud.umami.is).
+2. Go to **Settings → Websites** and add your site, using the domain visitors see (for example `yourname.dev`).
+3. Open the website's settings and copy its **Website ID**, a long string like `a1b2c3d4-…`.
+
+That ID is all your site needs. It isn't a secret: it ends up in your page's HTML for anyone to see.
+
+## Step 2: add the script to Next.js
+
+Store the ID in an environment variable, and only load the script when it's set:
+
+```tsx title="app/layout.tsx"
+import Script from "next/script";
+
+const umamiWebsiteId = process.env.NEXT_PUBLIC_UMAMI_WEBSITE_ID;
+
+export default function RootLayout({ children }) {
+  return (
+    <html lang="en">
+      <body>
+        {children}
+        {umamiWebsiteId && (
+          <Script
+            src="https://cloud.umami.is/script.js"
+            data-website-id={umamiWebsiteId}
+            strategy="afterInteractive"
+          />
+        )}
+      </body>
+    </html>
+  );
+}
+```
+
+Then, in Vercel, add `NEXT_PUBLIC_UMAMI_WEBSITE_ID` under **Settings → Environment Variables**, tick **Production** only, and redeploy.
+
+<Callout type="gotcha">
+  Set the variable for Production only. Your own visits on `localhost` and on
+  preview deployments then never load the script, so they can't inflate your
+  numbers. As with any `NEXT_PUBLIC_` variable, redeploy after changing it.
+</Callout>
+
+Not using Next.js? Paste the same tag into your HTML `<head>`:
+
+```html title="index.html"
+<script
+  defer
+  src="https://cloud.umami.is/script.js"
+  data-website-id="your-website-id"
+></script>
+```
+
+Open your live site, then Umami's dashboard. Your visit appears within a few seconds.
+
+## Step 3: track the clicks that matter
+
+Page views tell you what people read. Events tell you what they do. For a portfolio, the most useful event is a résumé download. Umami tracks clicks on any element with a `data-umami-event` attribute, no JavaScript needed:
+
+```tsx title="components/ResumeLink.tsx"
+<a href="/cv.pdf" download data-umami-event="Download résumé">
+  Download résumé
+</a>
+```
+
+Extra `data-umami-event-*` attributes attach details to the event, such as which button was clicked:
+
+```tsx
+<a
+  href="/cv.pdf"
+  download
+  data-umami-event="Download résumé"
+  data-umami-event-location="header"
+>
+  Résumé
+</a>
+```
+
+For events that aren't a click on a link or button, call the tracker yourself:
+
+```ts
+window.umami?.track("Copy code", { post: "deploy-guide" });
+```
+
+<Callout type="tip">
+  Keep event names in one constants file, like `events.downloadResume`.
+  "Download résumé" and "download-resume" show up as two different events, and a
+  typo splits your numbers.
+</Callout>
+
+## Step 4: get past ad blockers
+
+Many ad blockers block every request to known analytics domains, including `cloud.umami.is`. On a developer portfolio, where plenty of visitors run one, that can hide a real share of your traffic.
+
+The fix is to serve the script from your own domain. In Next.js, a rewrite forwards a path on your site to Umami Cloud:
+
+```ts title="next.config.ts"
+const nextConfig = {
+  async rewrites() {
+    return [
+      {
+        source: "/stats/:path*",
+        destination: "https://cloud.umami.is/:path*",
+      },
+    ];
+  },
+};
+```
+
+Then load the script from that path instead:
+
+```tsx
+<Script
+  src="/stats/script.js"
+  data-website-id={umamiWebsiteId}
+  strategy="afterInteractive"
+/>
+```
+
+The tracker sends events next to wherever its script came from, so they go to `/stats/api/send` on your own domain and the rewrite passes them on to Umami.
+
+## Reading the dashboard
+
+Umami's dashboard is small enough to read in a minute. For a portfolio, four numbers matter:
+
+| Metric        | What it tells you                                               |
+| ------------- | --------------------------------------------------------------- |
+| **Referrers** | Where visitors came from: LinkedIn, GitHub, Google, a job board |
+| **Pages**     | Which projects and posts people actually open                   |
+| **Events**    | How many visits end in a résumé download                        |
+| **Countries** | Whether you're reaching the job markets you're applying to      |
+
+Check it weekly, not hourly. A small site's numbers jump around from day to day; the trend over a month is what's worth acting on.
+
+<Callout type="warning">
+  Don't put personal data in event properties: no email addresses, names or form
+  contents. Umami is privacy-friendly by default, and it only stays that way if
+  what you send it is anonymous too.
+</Callout>
+
+## Other free options
+
+- **Self-hosted Umami** on Vercel with a free Postgres database removes the event limit, in exchange for running it yourself.
+- **Vercel Web Analytics** is a one-click option if you host on Vercel, with a smaller free allowance and fewer reports.
+- **Google Analytics** is free and powerful, but needs cookies and usually a consent banner.
+
+## Recap
+
+1. Create a website in Umami Cloud and copy its Website ID.
+2. Add the script with the ID from an environment variable set for Production only.
+3. Tag the clicks that matter with `data-umami-event`.
+4. Serve the script from your own domain so ad blockers don't hide visits.
+5. Read referrers, pages and events weekly, and act on the trend.
+
+This blog runs exactly this setup. It's how I know which of these guides you're reading.
