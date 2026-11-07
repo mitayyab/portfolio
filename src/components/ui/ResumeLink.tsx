@@ -1,4 +1,5 @@
 import { site } from "@/content/site";
+import { umamiEvents } from "@/lib/umami";
 import { ButtonLink, type ButtonLinkProps } from "./ButtonLink";
 
 type ResumeLinkProps = Omit<
@@ -17,6 +18,7 @@ export function ResumeLink(props: ResumeLinkProps) {
       href={site.links.resume}
       download
       aria-label="Download résumé (PDF)"
+      data-umami-event={umamiEvents.downloadResume}
     />
   );
 }
