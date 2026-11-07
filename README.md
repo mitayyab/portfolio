@@ -38,6 +38,16 @@ NEXT_PUBLIC_SITE_URL=https://your-domain.com
 
 It drives the canonical URL, Open Graph and Twitter URLs, `sitemap.xml`, `robots.txt` and the JSON-LD graph. If it is unset the site falls back to `https://$VERCEL_PROJECT_PRODUCTION_URL` (set automatically on Vercel) and then to `http://localhost:3000`, so a build never fails for lack of it.
 
+## Analytics
+
+Page views and two events ("Download résumé" and "Copy code") go to [Umami Cloud](https://umami.is), which uses no cookies, so the site needs no consent banner. The script only loads when `NEXT_PUBLIC_UMAMI_WEBSITE_ID` is set:
+
+```bash
+NEXT_PUBLIC_UMAMI_WEBSITE_ID=your-website-id
+```
+
+Set it in Vercel for the Production environment only, so local and preview visits stay out of the numbers, and redeploy. The tracker and its event endpoint are served from `/stats` on the site's own origin (a rewrite in `next.config.ts`), so ad blockers that match `cloud.umami.is` don't drop page views. Event names live in `src/lib/umami.ts`.
+
 ## Résumé and project images
 
 - **Résumé.** The "Résumé ↓" buttons download `public/ibrahim-tayyab-cv.pdf`. Replace that file to update it; the path is `site.links.resume` in `src/content/site.ts`.
@@ -61,6 +71,7 @@ src/
     contact/      Contact section, links and the mailto form
     blog/         Blog index (search, series filters), post layout and the
                   MDX elements posts render with
+    analytics/    Umami script, loaded only when a website ID is set
     seo/          JSON-LD component
     ui/           Shared primitives: Container, Section, SectionLabel, buttons, Copy
   content/        All copy and data, typed (see below)
