@@ -40,10 +40,10 @@ You could run an Express API on Vercel too, but keeping the API on Render means 
 
 This guide uses one repository with a folder for each half. Two separate repos work just as well; you'd skip the "root directory" settings below.
 
-```plaintext
+```bash
 my-app/
-  web/   Next.js frontend → Vercel
-  api/   Express API      → Render
+  web/   # Next.js frontend → Vercel
+  api/   # Express API      → Render
 ```
 
 Two things in the API decide whether Render can run it. It has to listen on the port Render gives it, and on every network interface, not only `localhost`:
@@ -176,8 +176,8 @@ Then deploy it:
 
 Your frontend now has a URL like `https://my-app.vercel.app`, but the API doesn't trust it yet. Back in Render, change `CORS_ORIGINS` to include it:
 
-```plaintext
-https://my-app.vercel.app,http://localhost:3000
+```bash
+CORS_ORIGINS=https://my-app.vercel.app,http://localhost:3000
 ```
 
 Save, and let Render redeploy. Open your Vercel URL, open the browser's developer tools on the **Network** tab, and use the app. Requests to `onrender.com` should come back with status `200`.
