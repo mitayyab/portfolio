@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from "next";
+import { Umami } from "@/components/analytics/Umami";
 import { site } from "@/content/site";
 import { cormorantGaramond, lora } from "@/lib/fonts";
 import { getSiteUrl } from "@/lib/site-url";
@@ -38,7 +39,10 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       lang="en"
       className={`${cormorantGaramond.variable} ${lora.variable}`}
     >
-      <body>{children}</body>
+      <body>
+        {children}
+        <Umami />
+      </body>
     </html>
   );
 }
