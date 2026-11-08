@@ -60,7 +60,6 @@ export interface PostMeta {
 
 /** Titles on the writing desk, listed on the blog index until they ship. */
 export const upcomingPosts: readonly { title: string; series: SeriesId }[] = [
-  { title: "Free image storage with Backblaze B2", series: "storage" },
   { title: "Send transactional email for free with Resend", series: "email" },
   {
     title: "How to structure a Next.js project that scales",

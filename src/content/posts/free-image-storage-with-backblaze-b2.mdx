@@ -1,0 +1,342 @@
+export const metadata = {
+  title: "Free image storage with Backblaze B2",
+  description:
+    "Store your app's user uploads and images in Backblaze B2's free 10 GB, upload straight from the browser with signed URLs, and show them with next/image, without your server ever touching the file.",
+  publishedAt: "2026-11-09",
+  series: "storage",
+  tools: ["Backblaze B2"],
+  level: "Beginner",
+  freeTier: {
+    headline: "10 GB storage free",
+    facts: [
+      { label: "Storage", value: "10 GB" },
+      { label: "Downloads", value: "3× storage / mo" },
+      { label: "API calls", value: "Free" },
+      { label: "After 10 GB", value: "$6.95 / TB" },
+    ],
+    verifiedAt: "2026-11-09",
+    pricingUrl: "https://www.backblaze.com/cloud-storage/pricing",
+  },
+};
+
+Sooner or later your app needs to store files: profile pictures, product photos, screenshots in a bug report. The first idea is usually to save them to a folder on your server. On free hosting, that folder is a trap.
+
+## Why not save uploads on your server?
+
+- **Render's free filesystem is temporary.** Anything your API writes to disk is gone after the next deploy, restart or spin-down. Your users' avatars disappear overnight.
+- **Vercel functions cap request bodies at 4.5 MB.** A photo straight off a phone can be bigger than that, so uploading through your API fails.
+- **Files make your server slow.** Every image request ties up the same small machine that answers your API calls.
+
+The usual fix is **object storage**: a service built only to store files and hand them out. Amazon S3 is the best known, but it has no lasting free tier and charges for every download. [Backblaze B2](https://www.backblaze.com/cloud-storage) is a friendlier start.
+
+## Why Backblaze B2
+
+- **10 GB free**, with no time limit. That's thousands of compressed photos.
+- **Free downloads up to three times what you store** each month. Store 10 GB and visitors can download 30 GB of it for free.
+- **No charge for API calls.** Uploads, downloads and listing files are all free.
+- **S3-compatible.** It speaks the same API as Amazon S3, so you use the official AWS SDK, and every S3 tutorial applies.
+
+<Callout type="tip">
+  If you go past 10 GB, you only pay for the extra: storage is $6.95 per TB per
+  month, so 20 GB costs about 7 cents. There's no minimum fee.
+</Callout>
+
+## How the upload works
+
+The trick is that your server never receives the file. Instead it hands the browser a **signed URL**: a link that lets whoever holds it upload one specific file to your bucket, for a few minutes.
+
+1. The browser tells your API: "I want to upload a 2 MB PNG."
+2. Your API checks that's allowed and replies with a signed upload URL.
+3. The browser uploads the file straight to B2 with that URL.
+4. The file is live at a public URL you can save in your database.
+
+Your secret keys stay on the server, the file skips your server entirely, and the 4.5 MB limit no longer applies.
+
+## Step 1: create a bucket
+
+A **bucket** is a top-level folder for your files.
+
+1. Sign up at [backblaze.com](https://www.backblaze.com/sign-up/cloud-storage). No credit card is needed for the free 10 GB.
+2. Go to **B2 Cloud Storage → Buckets** and click **Create a Bucket**.
+3. Give it a name. Names are unique across all of Backblaze, so add something of your own, like `yourname-app-uploads`.
+4. Set **Files in Bucket are** to **Public**, so anyone with a file's URL can view it. That's what you want for images shown on your site.
+5. Note the **Endpoint** shown on the bucket, for example `s3.us-west-004.backblazeb2.com`. The middle part, `us-west-004`, is your **region**.
+
+<Callout type="gotcha">
+  Backblaze asks for one more step before your first public bucket: verify your
+  email, and either have a payment on file or pay a small fee by card, which is
+  credited to your balance. It's an anti-abuse check, not a charge. If you'd
+  rather not, keep the bucket private and use the signed download URLs shown
+  near the end.
+</Callout>
+
+## Step 2: create an application key
+
+Your app needs its own key, limited to this one bucket:
+
+1. Go to **Application Keys** and click **Add a New Application Key**.
+2. Name it after your app, and under **Allow access to Bucket(s)** pick only your new bucket.
+3. Leave the type as **Read and Write**, and create it.
+
+Backblaze shows a **keyID** and an **applicationKey**. Copy the application key now: it's shown only once. Put both in your server's environment variables:
+
+```bash title=".env.local"
+B2_KEY_ID=004a1b2c3d4e5f60000000001
+B2_APPLICATION_KEY=K004...
+B2_BUCKET=yourname-app-uploads
+B2_REGION=us-west-004
+```
+
+<Callout type="warning">
+  The application key is a password. Never give it a `NEXT_PUBLIC_` name, never
+  send it to the browser, and never commit it. Only your server should see it.
+</Callout>
+
+## Step 3: connect with the AWS SDK
+
+Install the S3 client and the helper that signs URLs:
+
+```bash
+npm install @aws-sdk/client-s3 @aws-sdk/s3-request-presigner
+```
+
+Then create one client for your whole app, pointed at B2 instead of Amazon:
+
+```ts title="lib/b2.ts"
+import { S3Client } from "@aws-sdk/client-s3";
+
+const region = process.env.B2_REGION!;
+export const bucket = process.env.B2_BUCKET!;
+
+export const b2 = new S3Client({
+  endpoint: `https://s3.${region}.backblazeb2.com`,
+  region,
+  credentials: {
+    accessKeyId: process.env.B2_KEY_ID!,
+    secretAccessKey: process.env.B2_APPLICATION_KEY!,
+  },
+  // Only add checksums when an operation needs them; see below.
+  requestChecksumCalculation: "WHEN_REQUIRED",
+  responseChecksumValidation: "WHEN_REQUIRED",
+});
+
+/** Where a file in the public bucket can be viewed. */
+export function publicUrl(key: string) {
+  return `https://${bucket}.s3.${region}.backblazeb2.com/${key}`;
+}
+```
+
+<Callout type="gotcha">
+  Recent versions of the AWS SDK add a checksum to every upload by default.
+  Inside a signed URL it's the checksum of an empty file, so the real upload
+  fails. The two `WHEN_REQUIRED` lines turn that off. It's a common reason for
+  uploads that work on Amazon S3 but fail on B2.
+</Callout>
+
+## Step 4: hand out signed upload URLs
+
+This route checks what the browser wants to upload and replies with a signed URL. The example is a Next.js route handler; in Express the body is the same.
+
+```ts title="app/api/uploads/route.ts"
+import { randomUUID } from "node:crypto";
+import { PutObjectCommand } from "@aws-sdk/client-s3";
+import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
+import { b2, bucket, publicUrl } from "@/lib/b2";
+
+const MAX_BYTES = 5 * 1024 * 1024; // 5 MB
+const EXTENSIONS: Record<string, string> = {
+  "image/jpeg": "jpg",
+  "image/png": "png",
+  "image/webp": "webp",
+};
+
+export async function POST(request: Request) {
+  const { type, size } = await request.json();
+
+  const extension = EXTENSIONS[type];
+  if (!extension) {
+    return Response.json({ error: "Unsupported type" }, { status: 400 });
+  }
+  if (typeof size !== "number" || size <= 0 || size > MAX_BYTES) {
+    return Response.json({ error: "File too large" }, { status: 400 });
+  }
+
+  // Never reuse the user's file name: it can clash or contain anything.
+  const key = `uploads/${randomUUID()}.${extension}`;
+  const command = new PutObjectCommand({
+    Bucket: bucket,
+    Key: key,
+    ContentType: type,
+    ContentLength: size,
+  });
+  const uploadUrl = await getSignedUrl(b2, command, {
+    expiresIn: 60, // seconds
+    signableHeaders: new Set(["content-type"]),
+  });
+
+  return Response.json({ uploadUrl, url: publicUrl(key) });
+}
+```
+
+The size and type are signed into the URL. If someone tries to upload a different file with it, a bigger one or a different type, B2 rejects the upload. That's why `signableHeaders` is there: without it, the type isn't part of the signature.
+
+<Callout type="warning">
+  As written, anyone can ask this route for an upload URL. In a real app, check
+  the user is signed in before signing anything, or strangers can fill your 10
+  GB.
+</Callout>
+
+## Step 5: allow uploads from your site (CORS)
+
+The browser uploads to B2's domain, not yours, so B2 has to allow your site's origin, just like your API did in the [deploy guide](/blog/deploy-full-stack-app-free-vercel-render). Save this script:
+
+```js title="scripts/b2-cors.mjs"
+import { PutBucketCorsCommand } from "@aws-sdk/client-s3";
+import { b2, bucket } from "../lib/b2.ts";
+
+await b2.send(
+  new PutBucketCorsCommand({
+    Bucket: bucket,
+    CORSConfiguration: {
+      CORSRules: [
+        {
+          AllowedOrigins: [
+            "https://my-app.vercel.app",
+            "http://localhost:3000",
+          ],
+          AllowedMethods: ["PUT", "GET"],
+          AllowedHeaders: ["*"],
+          MaxAgeSeconds: 3600,
+        },
+      ],
+    },
+  }),
+);
+console.log("CORS rules saved");
+```
+
+Then run it once, with your keys loaded from `.env.local`. Node 22.18 or later can import the TypeScript file directly:
+
+```bash
+node --env-file=.env.local scripts/b2-cors.mjs
+```
+
+<Callout type="gotcha">
+  Saving CORS rules replaces all of the bucket's rules, including any you set in
+  the Backblaze console. Keep them in this one script, and when your site gets
+  its own domain, add it to `AllowedOrigins` and run the script again.
+</Callout>
+
+## Step 6: upload from the browser
+
+Now the browser does two requests: one to your API for the URL, one to B2 with the file.
+
+```tsx title="components/ImageUpload.tsx"
+"use client";
+
+import { useState } from "react";
+
+async function uploadImage(file: File) {
+  const response = await fetch("/api/uploads", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ type: file.type, size: file.size }),
+  });
+  if (!response.ok) throw new Error("Upload not allowed");
+  const { uploadUrl, url } = await response.json();
+
+  const upload = await fetch(uploadUrl, {
+    method: "PUT",
+    headers: { "Content-Type": file.type },
+    body: file,
+  });
+  if (!upload.ok) throw new Error("Upload failed");
+  return url as string;
+}
+
+export function ImageUpload() {
+  const [url, setUrl] = useState<string>();
+
+  return (
+    <>
+      <input
+        type="file"
+        accept="image/jpeg,image/png,image/webp"
+        onChange={async (event) => {
+          const file = event.target.files?.[0];
+          if (file) setUrl(await uploadImage(file));
+        }}
+      />
+      {url && <img src={url} alt="Your upload" width={200} />}
+    </>
+  );
+}
+```
+
+The `Content-Type` header must match the type you sent to your API, because it's part of the signature. The browser sets `Content-Length` for you.
+
+In a real app, save `url` (or just the key) in your database next to the user or post it belongs to.
+
+## Step 7: show images with next/image
+
+`next/image` only optimises images from hosts you allow. Add your bucket's host to `next.config.ts`, built from the same environment variables:
+
+```ts title="next.config.ts"
+const { B2_BUCKET, B2_REGION } = process.env;
+
+const nextConfig = {
+  images: {
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: `${B2_BUCKET}.s3.${B2_REGION}.backblazeb2.com`,
+        pathname: "/uploads/**",
+      },
+    ],
+  },
+};
+```
+
+Allow only your own bucket's host. A pattern like `*.backblazeb2.com` would let anyone use your site to optimise images from their buckets.
+
+Then use the saved URL like any other image:
+
+```tsx
+<Image src={user.avatarUrl} alt={user.name} width={96} height={96} />
+```
+
+Next.js then resizes the image and converts it to a modern format such as WebP, so visitors download far less than the original file. That also keeps you well inside B2's free downloads.
+
+## Private files: signed download URLs
+
+Not every file should be public. Invoices, ID documents or anything personal belong in a **private** bucket. Files there have no public URL; your server signs a short-lived download link only for users allowed to see them:
+
+```ts
+import { GetObjectCommand } from "@aws-sdk/client-s3";
+
+const command = new GetObjectCommand({ Bucket: bucket, Key: key });
+const downloadUrl = await getSignedUrl(b2, command, {
+  expiresIn: 300, // 5 minutes
+});
+```
+
+## Know the limits
+
+| What      | Free                                       | After that             |
+| --------- | ------------------------------------------ | ---------------------- |
+| Storage   | 10 GB                                      | $6.95 per TB per month |
+| Downloads | Up to 3× your average stored data, monthly | $0.01 per GB           |
+| API calls | Free                                       | Still free             |
+
+Downloads through Backblaze's CDN partners, including Cloudflare, Fastly and bunny.net, don't count towards the 3× limit. If your images ever get popular, putting one of them in front of the bucket keeps downloads free.
+
+## Recap
+
+1. Don't store uploads on your server's disk: free hosts wipe it and limit request sizes.
+2. Create a public B2 bucket and an application key limited to it.
+3. Point the AWS SDK at B2, with checksums set to `WHEN_REQUIRED`.
+4. Have your API check each upload and sign a short-lived URL for it.
+5. Allow your site's origins with a CORS rule, then upload from the browser.
+6. Save the file's URL, and serve it through `next/image`.
+
+Your app can now take image uploads, store them for free and serve them fast.
